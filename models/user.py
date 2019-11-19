@@ -7,7 +7,7 @@ DATABASE = SqliteDatabase('emotus.sqlite')
 
 # user model - clients account
 class User(Model, UserMixin):
-	image = CharField()
+	image = CharField(null=True)
 	first_name = CharField(max_length=75)
 	last_name = CharField(max_length=75)
 	username = CharField(max_length=75, unique=True)
