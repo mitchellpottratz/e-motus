@@ -1,8 +1,14 @@
+# module imports 
 from flask import Flask, g
+from flask_cors import CORS
 from flask_login import LoginManager
 
+# model import 
 import models.config
 from models.user import User
+
+# resource imports 
+from resources.users import users
 
 DEGUB = True # app with log error messages
 PORT = 8000 # app runs on port 8000
@@ -22,15 +28,15 @@ login_manager.init_app(app)
 @login_manager.user_loader
 def load_user(user_id):
 	try:
-		return models.User.get(models.User.id == user_id)
-	except models.DoesNotExist:
+		return models.User.get(User.id == user_id)
+	except User.DoesNotExist:
  		return None
 
 
 # called before every request
 @app.before_request 
 def before_request():
-	g.db = models.DATABASE 
+	g.db = models.config.DATABASE 
 	g.db.connect() # connects tot he database
 
 
@@ -42,13 +48,11 @@ def after_request(response):
 
 
 # setup CORS for each resource 
-# CORS(user, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(users, origins=['http://localhost:3000'], supports_credentials=True)
 
 
-# index route - apps landing page
-@app.route('/')
-def index():
-	return 'index page'
+# setup blueprints
+app.register_blueprint(users, url_prefix='/api/v1/users')
 
 
 if __name__ == '__main__':
