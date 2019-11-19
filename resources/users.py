@@ -9,7 +9,7 @@ from peewee import DoesNotExist
 users = Blueprint('users', 'users')
 
 # registration route
-@users.route('/register')
+@users.route('/register', methods=['POST'])
 def register():
 	# gets the clients registration data
 	data = request.get_json()
@@ -47,14 +47,63 @@ def register():
 
 		return jsonify(
 			data=user_dict,
-			status={'code': 201, 'message': 'Successfully registered {}'.format(user_dict['username'])}
+			status={'code': 201, 'message': 'Successfully registered {}.'.format(user_dict['email'])}
 		)
 
 
 # login route
-@users.route('/login')
+@users.route('/login', methods=['POST'])
 def login():
-	return jsonify({'msg': 'works'})
+	# gets the clients data
+	data = request.get_json()
+
+	try:
+		# query user by email
+		user = User.get(User.email == data['email'])
+		
+		# if the password is correct
+		if check_password_hash(user.password, data['password']):
+			# login the user
+			login_user(user)
+
+			# convert to dicitonary and remove password
+			user_dict = model_to_dict(user)
+			del user_dict['password']
+
+			return jsonify(
+				data=user_dict,
+				status={'code': 200, 'message': 'Successfully logged in {}.'.format(user_dict['email'])}
+			)
+
+		# if the password is incorrect
+		else:
+			return jsonify(
+				data={},
+				status={'code': 401, 'message': 'Email or password is incorrect.'}
+			)
+
+	# if email doesnt exist	
+	except DoesNotExist:
+		return jsonify(
+			data={},
+			status={'code': 401, 'message': 'Email or password is incorrect.'}
+		)
+
+
+# logout route
+@users.route('/logout', methods=['GET'])
+def logout():
+	# logs out the user
+	logout_user()
+
+	return jsonify(
+		data={},
+		status={'code': 200, 'message': 'Successfully logged out.'}
+	)
+
+
+
+
 
 
 
