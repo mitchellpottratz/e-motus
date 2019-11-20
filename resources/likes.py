@@ -13,7 +13,8 @@ likes = Blueprint('likes', 'likes')
 
 # index route - gets all of the likes for a post
 @likes.route('/', methods=['GET'])
-def get_post_likes():
+@login_required
+def get_posts_likes():
 	try:
 		# get data from client - contains a post id
 		data = request.get_json()
