@@ -9,3 +9,10 @@ from peewee import DoesNotExist
 
 # creates a blueprint for the users resource
 likes = Blueprint('likes', 'likes')
+
+
+@likes.route('/', methods=['GET'])
+def get_posts_likes():
+	return 'works'
+
+

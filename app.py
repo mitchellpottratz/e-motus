@@ -11,6 +11,7 @@ from peewee import DoesNotExist
 # resource imports 
 from resources.users import users
 from resources.posts import posts
+from resources.likes import likes
 
 DEGUB = True # app with log error messages
 PORT = 8000 # app runs on port 8000
@@ -51,11 +52,13 @@ def after_request(response):
 
 # setup CORS for each resource 
 CORS(users, origins=['http://localhost:3000'], supports_credentials=True)
-
+CORS(posts, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(likes, origins=['http://localhost:3000'], supports_credentials=True)
 
 # setup blueprints
 app.register_blueprint(users, url_prefix='/api/v1/users')
 app.register_blueprint(posts, url_prefix='/api/v1/posts')
+app.register_blueprint(likes, url_prefix='/api/v1/likes')
 
 
 if __name__ == '__main__':
