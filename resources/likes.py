@@ -21,7 +21,13 @@ def get_post_likes():
 		# tries to get post by its id
 		post = Post.get(Post.id == data['post'], Post.soft_delete == False)
 
-		print(post.likes)
+		# loops the posts likes and convert each like to a dictionary
+		post_likes_dict = [model_to_dict(like) for like in post.likes]
+
+		return jsonify(
+			data=post_likes_dict,
+			status={'code': 200, 'message': 'Succesfully got likes.'}
+		)
 
 	# exception thrown if the post doesnt exist
 	except DoesNotExist:
