@@ -6,6 +6,7 @@ from flask_login import LoginManager
 # model import 
 import models.config
 from models.user import User
+from peewee import DoesNotExist
 
 # resource imports 
 from resources.users import users
@@ -30,7 +31,7 @@ login_manager.init_app(app)
 def load_user(user_id):
 	try:
 		return User.get(User.id == user_id)
-	except User.DoesNotExist:
+	except DoesNotExist:
  		return None
 
 
