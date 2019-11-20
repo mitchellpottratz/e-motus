@@ -1,5 +1,6 @@
 from peewee import *
 from .user import User
+from .post import Post
 
 # database being used for this app
 DATABASE = SqliteDatabase('emotus.sqlite')
@@ -8,7 +9,7 @@ DATABASE = SqliteDatabase('emotus.sqlite')
 # this method is called when the server starts
 def initialize():
 	DATABASE.connection() # establish database connection
-	DATABASE.create_tables([User], safe=True) # creates the database tables
+	DATABASE.create_tables([User, Post], safe=True) # creates the database tables
 	print('tables created')
 	DATABASE.close() # closes the database connection
 
