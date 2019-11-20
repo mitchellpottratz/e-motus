@@ -11,10 +11,24 @@ from peewee import DoesNotExist
 likes = Blueprint('likes', 'likes')
 
 
-# gets all of the likes for a post
-@likes.route('/<post_id>', methods=['GET'])
-def get_posts_likes():
-	pass
+# index route - gets all of the likes for a post
+@likes.route('/', methods=['GET'])
+def get_post_likes():
+	try:
+		# get data from client - contains a post id
+		data = request.get_json()
+
+		# tries to get post by its id
+		post = Post.get(Post.id == data['post'], Post.soft_delete == False)
+
+		print(post.likes)
+
+	# exception thrown if the post doesnt exist
+	except DoesNotExist:
+		return jsonify(
+			data={},
+			status={'code': 404, 'message': 'Failure to get resource.'}
+		)
 
 
 # create route - creates a new like for a post
@@ -22,7 +36,7 @@ def get_posts_likes():
 @login_required
 def create_like():
 	try:
-		# gets data from the client - this data only contains a post id
+		# gets data from the client - contains a post id
 		data = request.get_json()
 
 		# tries to get the post by its id
@@ -57,37 +71,73 @@ def create_like():
 	except DoesNotExist:
 		return jsonify(
 			data={},
-			status={'code': 404, 'message': 'Failure to get resource'}
+			status={'code': 404, 'message': 'Failure to get resource.'}
 		)
 
 
-# delete route - deletes a like by changing soft_delete field to true
-@likes.route('/', methods=['GET'])
+# show route - shows a single like
+@likes.route('/<like_id>', methods=['GET'])
 @login_required
-def delete_like():
+def show_like(like_id):
 	try:
-		# gets data from the client - this data only contains a like id
-		data = request.get_json()
-
 		# tries to get the like by its id
-		like = Post.get(Like.id == data['like'], Like.soft_delete == False)
-
-		# set soft_delete to true to delete the like
-		like.soft_delete = True 
-		like.save()
+		like = Like.get(Like.id == like_id, Like.soft_delete == False)
 
 		# convert to dictionary and remove users passwords
 		like_dict = model_to_dict(like)
 		del like_dict['user']['password']
 		del like_dict['post']['user']['password']
 
-		return jsonify({})
+		return jsonify(
+			data=like_dict,
+			status={'code': 200, 'message': 'Successfully got like.'}
+		)
 
 	# exception thrown if the like doesnt exist
 	except DoesNotExist:
 		return jsonify(
 			data={},
-			status={'code': 404, 'message': 'Failure to get resource'}
+			status={'code': 404, 'message': 'Failure to get resource.'}
+		)	
+
+
+# delete route - allows user to remove a like from a post
+@likes.route('/<like_id>', methods=['DELETE'])
+@login_required
+def delete_like(like_id):
+	try:
+		# tries to get the like by its id
+		like = Like.get(Like.id == like_id, Like.soft_delete == False)
+
+		# if the user is the user of the like
+		if like.user.id == current_user.id:
+
+			# set soft_delete to true to delete the like
+			like.soft_delete = True 
+			like.save()
+
+			# convert to dictionary and remove users passwords
+			like_dict = model_to_dict(like)
+			del like_dict['user']['password']
+			del like_dict['post']['user']['password']
+
+			return jsonify(
+				data=like_dict,
+				status={'code': 200, 'message': 'Successfully unliked post.'}
+			)
+
+		# if the user is not the user of the like
+		else:
+			return jsonify(
+				data={},
+				status={'code', 401, 'message', 'User does not have access to this resource.'}
+			)
+
+	# exception thrown if the like doesnt exist
+	except DoesNotExist:
+		return jsonify(
+			data={},
+			status={'code': 404, 'message': 'Failure to get resource.'}
 		)
 
 

@@ -129,7 +129,7 @@ def delete_one_post(id):
 		else:
 			return jsonify(
 				data={},
-				status={'code': 401, 'message': 'You do not have access to this post.'}
+				status={'code': 401, 'message': 'User does not have access to this resource.'}
 			)
 
 	# if he post does not exist
