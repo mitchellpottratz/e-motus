@@ -99,16 +99,43 @@ def update_one_post(id):
 		)
 
 
+# delete route
+@posts.route('/<id>', methods=['DELETE'])
+@login_required
+def delete_one_post(id):
+	try:
+		# gets post data from client
+		data = request.get_json()
 
+		# queries post by id
+		post = Post.get(Post.id == id, Post.soft_delete == False)
 
+		# if the current user is the user of the post
+		if current_user.id == post.user.id:
+			# set soft_delete to true and save the post
+			post.soft_delete = True 
+			post.save()
 
+			# convert to dictionary and remove user password
+			post_dict = model_to_dict(post)
+			del post_dict['user']['password']
 
+			return jsonify(
+				data=post_dict,
+				status={'code': 200, 'message': 'Successfully deleted post.'}
+			)
 
+		# if the current user is not the user of the post
+		else:
+			return jsonify(
+				data={},
+				status={'code': 401, 'message': 'You do not have access to this post.'}
+			)
 
-
-
-
-
-
-
-
+	# if he post does not exist
+	except DoesNotExist:
+		return jsonify(
+			data={},
+			status={'code': 404, 'message': 'Failure to get resource'}
+		)
+		
