@@ -9,6 +9,7 @@ from models.user import User
 
 # resource imports 
 from resources.users import users
+from resources.posts import posts
 
 DEGUB = True # app with log error messages
 PORT = 8000 # app runs on port 8000
@@ -53,6 +54,7 @@ CORS(users, origins=['http://localhost:3000'], supports_credentials=True)
 
 # setup blueprints
 app.register_blueprint(users, url_prefix='/api/v1/users')
+app.register_blueprint(posts, url_prefix='/api/v1/posts')
 
 
 if __name__ == '__main__':
