@@ -138,4 +138,7 @@ def delete_one_post(id):
 			data={},
 			status={'code': 404, 'message': 'Failure to get resource'}
 		)
-		
+
+
+
+

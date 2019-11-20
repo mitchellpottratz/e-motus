@@ -2,7 +2,7 @@ import datetime
 from peewee import *
 from .user import User
 
-# database the User models data will go into
+# database the Post model data will go into
 DATABASE = SqliteDatabase('emotus.sqlite')
 
 
