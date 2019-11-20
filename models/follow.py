@@ -22,6 +22,14 @@ class Follow(Model):
 		database = DATABASE
 
 
+	# removes the password from the followed_by and 
+	# followed user
+	@staticmethod
+	def remove_passwords(follow_dict):
+		del follow_dict['followed_by']['password']
+		del follow_dict['followed']['password']
+
+
 
 
 

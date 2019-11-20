@@ -10,6 +10,33 @@ from peewee import DoesNotExist
 follows = Blueprint('follows', 'follows')
 
 
+# index route - shows all of the current users follower
+@follows.route('/', methods=['GET'])
+@login_required
+def get_all_followers():
+
+	# gets all of the users followers
+	followers = Follow.select().where(Follow.followed == current_user.id,
+						   			  Follow.soft_delete == False)
+
+	print(followers)
+
+	# iterate over all of the users followers to 
+	# convert each follower instance to a dictionary
+	# and remove the users passwords
+	followers_list = []	
+	for follower in followers:
+		follow_dict = model_to_dict(follower)
+		Follow.remove_passwords(follow_dict)
+		followers_list.append(follow_dict)
+
+
+	return jsonify(
+		data=followers_list,
+		status={'message': 'Successfully got all the followers'}
+	)
+
+
 # create route - allows a user to follow another user
 @follows.route('/', methods=['POST'])
 @login_required
