@@ -22,11 +22,18 @@ def get_posts_likes():
 		# tries to get post by its id
 		post = Post.get(Post.id == data['post'], Post.soft_delete == False)
 
-		# loops the posts likes and convert each like to a dictionary
-		post_likes_dict = [model_to_dict(like) for like in post.likes]
+		# iterate through all of the posts likes, convert each like
+		# to a dictionary, remove the users password, and append to the list
+		likes_list = []
+		for like in post.likes:
+			# only add likes with a soft_delete of false to the list
+			if like.soft_delete == False:
+				like_dict = model_to_dict(like)
+				Like.remove_passwords(like_dict)
+				likes_list.append(like_dict)
 
 		return jsonify(
-			data=post_likes_dict,
+			data=likes_list,
 			status={'code': 200, 'message': 'Succesfully got likes.'}
 		)
 
