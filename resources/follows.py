@@ -14,7 +14,7 @@ follows = Blueprint('follows', 'follows')
 @follows.route('/', methods=['GET'])
 @login_required
 def get_all_followers():
-
+	print(current_user.id)
 	# gets all of the users followers
 	followers = Follow.select().where(Follow.followed == current_user.id,
 						   			  Follow.soft_delete == False)
@@ -81,6 +81,36 @@ def follow_user():
 			data={},
 			status={'code': 404, 'message': 'Failure getting resource.'}
 		)
+
+
+# delete route
+@follows.route('/<follow_id>', methods=['DELETE'])
+@login_required
+def unfollow_user(follow_id):
+	try:
+		# gets the follow by its id
+		follow = Follow.get(Follow.id == follow_id, Follow.soft_delete == False)
+
+		# deletes the follow with soft delete and saves it
+		follow.soft_delete = True
+		follow.save()
+
+		# converts to dictionary and removes users passwords
+		follow_dict = model_to_dict(follow)
+		Follow.remove_passwords(follow_dict)
+
+		return jsonify(
+			data=follow_dict,
+			status={'code': 200, 'message': 'Successfully unfollowed {}.'.format(follow_dict['followed']['email'])}
+		)
+
+	# exception thrown if the model exists
+	except DoesNotExist:
+		return jsonify(
+			data={},
+			status={'code': 404, 'message': 'Failure getting resource.'}		
+		)
+
 
 
 
