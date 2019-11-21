@@ -14,7 +14,7 @@ follows = Blueprint('follows', 'follows')
 @follows.route('/', methods=['GET'])
 @login_required
 def get_all_followers():
-	print(current_user.id)
+
 	# gets all of the users followers
 	followers = Follow.select().where(Follow.followed == current_user.id,
 						   			  Follow.soft_delete == False)
@@ -51,13 +51,30 @@ def follow_user():
 		try:
 			# checks if the current user is already following this user 
 			is_following = Follow.get(Follow.followed_by == current_user.id,
-									  Follow.followed == user_to_follow.id,
-									  Follow.soft_delete == False)
+									  Follow.followed == user_to_follow.id)
 
-			return jsonify(
-				data={},
-				status={'code': 401, 'message': 'User is already following this user'}
-			)
+			# if the user has previously followed this user before
+			if is_following.soft_delete == True:
+
+				# set soft_delete to false and save
+				is_following.soft_delete = False
+				is_following.save()
+
+				# convert to dictionary and remove the users password
+				follow_dict = model_to_dict(is_following)
+				Follow.remove_passwords(follow_dict)
+
+				return jsonify(
+					data=follow_dict,
+					status={'code': 201, 'message': 'User is now following {}.'.format(follow_dict['followed']['email'])}
+				)
+				
+			# if the user is currently already following this user
+			else:
+				return jsonify(
+					data={},
+					status={'code': 401, 'message': 'User is already following this user'}
+				)
 
 		# exception thrown if the current_user is not already followng the user
 		except DoesNotExist:
