@@ -51,12 +51,29 @@ def create_like():
 	
 		try:
 			# checks if a like for that post and user already exists
-			Like.get(Like.post == post.id, Like.user == current_user.id, Like.soft_delete == False)
+			like = Like.get(Like.post == post.id, Like.user == current_user.id)
 
-			return jsonify(
-				data={},
-				status={'code': 401, 'message': 'User has already liked this post'}
-			)
+			# if the like already existed before, but was removed
+			if like.soft_delete == True:
+				# set soft_delete to false and save
+				like.soft_delete = False
+				like.save()
+
+				# convert to dictonary and remove password
+				like_dict = model_to_dict(like)
+				Like.remove_passwords(like_dict)
+
+				return jsonify(
+					data=like_dict,
+					status={'code': 201, 'message': 'User successfully liked post.'}
+				)
+
+			# if the user already liked teh post
+			else:
+				return jsonify(
+					data={},
+					status={'code': 401, 'message': 'User has already liked this post'}
+				)
 
 		# if the user has not already likes the post
 		except DoesNotExist:

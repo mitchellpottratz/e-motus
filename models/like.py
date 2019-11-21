@@ -22,6 +22,13 @@ class Like(Model):
 	class Meta:
 		database = DATABASE
 
+	# removes the passwords for both of the users
+	# in a like dictionary
+	@staticmethod
+	def remove_passwords(like_dict):
+		del like_dict['user']['password']
+		del like_dict['post']['user']['password']
+
 
 
 
