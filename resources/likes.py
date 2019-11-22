@@ -45,6 +45,27 @@ def get_posts_likes():
 		)
 
 
+@likes.route('/user', methods=['GET'])
+def get_users_likes():
+	
+	# gets all of the currents users likes
+	likes = Like.select().where(Like.user == current_user.id, 
+							    Like.soft_delete == False)
+
+	# iterate through all the likes, convert each like
+	# to a dictionary, remove the users password
+	users_likes = []
+	for like in likes:
+		like_dict = model_to_dict(like)
+		Like.remove_passwords(like_dict)
+		users_likes.append(like_dict)	
+
+	return jsonify(
+		data=users_likes,
+		status={'code': 200, 'message': 'Successfully got users likes.'}
+	)
+
+
 # create route - creates a new like for a post
 @likes.route('/', methods=['POST'])
 @login_required
