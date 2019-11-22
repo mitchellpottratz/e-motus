@@ -3,6 +3,7 @@ from playhouse.shortcuts import model_to_dict
 from flask_login import current_user, login_required
 from peewee import DoesNotExist
 from models.post import Post 
+from models.follow import Follow
 
 
 # creates blueprint for the posts resource
@@ -29,6 +30,37 @@ def get_users_posts():
 		data=posts_list,
 		status={'code': 200, 'message': 'Successfully got all of the users posts.'}
 	)
+
+
+# this route returns all of the post form the users that 
+# the current user follows
+@posts.route('/feed', methods=['GET'])
+@login_required
+def get_feed_posts():
+
+	# gets all of the users that follow the current user
+	# users_followers = Follow.select().where()
+
+	# iterate over all of the users that follow the current user and get all
+	# of their posts
+	users_feed = []
+	for user in users_followers:
+		posts = Post.select().where(Post.user == user, Post.soft_delete == False)
+
+		# converts each post to a dictionary, removes the password and adds it to
+		# users_feed list 
+		for post in posts:
+			post_dict = model_to_dict(post)
+			del post_dict['user']['password']
+			users_feed.append(post_dict)
+	print('users feed:', users_feed)
+
+	return jsonify(
+		data=users_feed,
+		status={'code': 200, 'message': 'Successfully got the users feed'}
+	)
+
+
 
 # create route
 @posts.route('/', methods=['POST'])

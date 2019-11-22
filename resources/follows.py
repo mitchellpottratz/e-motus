@@ -10,8 +10,8 @@ from peewee import DoesNotExist
 follows = Blueprint('follows', 'follows')
 
 
-# index route - shows all of the current users follower
-@follows.route('/', methods=['GET'])
+# shows all of the current users followers
+@follows.route('/followers', methods=['GET'])
 @login_required
 def get_all_followers():
 
@@ -36,6 +36,29 @@ def get_all_followers():
 		status={'message': 'Successfully got all the followers'}
 	)
 
+
+# gets all of the user the current user is following
+@follows.route('/following', methods=['GET'])
+@login_required
+def get_all_following():
+
+	# gets all the users the current user is followng
+	following = Follow.select().where(Follow.followed_by == current_user.id,
+						   			  Follow.soft_delete == False)
+
+	# iterate all of the users following the current user, convert
+	# each following instance to a dictionary and remove the users
+	# password
+	following_list = []	
+	for follow in following:
+		following_dict = model_to_dict(follow)
+		Follow.remove_passwords(following_dict)
+		following_list.append(following_dict)
+
+	return jsonify(
+		data=following_list,
+		status={'code': 200, 'message': 'Successfully got all of the users the current user is following'}
+	)
 
 # create route - allows a user to follow another user
 @follows.route('/', methods=['POST'])
