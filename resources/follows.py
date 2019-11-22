@@ -124,12 +124,14 @@ def follow_user():
 
 
 # delete route
-@follows.route('/<follow_id>', methods=['DELETE'])
+@follows.route('/<user_id>', methods=['DELETE'])
 @login_required
-def unfollow_user(follow_id):
+def unfollow_user(user_id):
 	try:
 		# gets the follow by its id
-		follow = Follow.get(Follow.id == follow_id, Follow.soft_delete == False)
+		follow = Follow.get(Follow.followed == user_id,
+							Follow.followed_by == current_user.id,
+					        Follow.soft_delete == False)
 
 		# deletes the follow with soft delete and saves it
 		follow.soft_delete = True
