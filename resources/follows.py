@@ -37,7 +37,7 @@ def get_all_followers():
 	)
 
 
-# gets all of the user the current user is following
+# gets all of the users the current user is following
 @follows.route('/following', methods=['GET'])
 @login_required
 def get_all_following():
@@ -51,8 +51,8 @@ def get_all_following():
 	# password
 	following_list = []	
 	for follow in following:
-		following_dict = model_to_dict(follow)
-		Follow.remove_passwords(following_dict)
+		following_dict = model_to_dict(follow.followed)
+		del following_dict['password']
 		following_list.append(following_dict)
 
 	return jsonify(
