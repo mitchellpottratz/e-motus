@@ -54,11 +54,11 @@ def create_like():
 		data = request.get_json()
 
 		# tries to get the post by its id
-		post = Post.get(Post.id == data['post'], Post.soft_delete == False)
+		post_id = Post.get(Post.id == data['postId'], Post.soft_delete == False)
 	
 		try:
 			# checks if a like for that post and user already exists
-			like = Like.get(Like.post == post.id, Like.user == current_user.id)
+			like = Like.get(Like.post == post_id, Like.user == current_user.id)
 
 			# if the like already existed before, but was removed
 			if like.soft_delete == True:
@@ -86,7 +86,7 @@ def create_like():
 		except DoesNotExist:
 
 			# creates a new like for the post
-			like = Like.create(post=post.id, user=current_user.id)
+			like = Like.create(post=post_id, user=current_user.id)
 
 			# convert like to dictionary and remove both users password
 			like_dict = model_to_dict(like)

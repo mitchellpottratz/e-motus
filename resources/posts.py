@@ -38,14 +38,15 @@ def get_users_posts():
 @login_required
 def get_feed_posts():
 
-	# gets all of the users that follow the current user
-	# users_followers = Follow.select().where()
+	# gets all of the follow instance where the user matches the followed_by field
+	users_followers = Follow.select().where(Follow.followed_by == current_user.id,
+											Follow.soft_delete == False)
 
 	# iterate over all of the users that follow the current user and get all
 	# of their posts
 	users_feed = []
 	for user in users_followers:
-		posts = Post.select().where(Post.user == user, Post.soft_delete == False)
+		posts = Post.select().where(Post.user == user.followed, Post.soft_delete == False)
 
 		# converts each post to a dictionary, removes the password and adds it to
 		# users_feed list 
@@ -53,7 +54,6 @@ def get_feed_posts():
 			post_dict = model_to_dict(post)
 			del post_dict['user']['password']
 			users_feed.append(post_dict)
-	print('users feed:', users_feed)
 
 	return jsonify(
 		data=users_feed,
