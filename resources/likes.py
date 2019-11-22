@@ -154,36 +154,28 @@ def show_like(like_id):
 
 
 # delete route - allows user to remove a like from a post
-@likes.route('/<like_id>', methods=['DELETE'])
+@likes.route('/<post_id>', methods=['DELETE'])
 @login_required
-def delete_like(like_id):
+def delete_like(post_id):
 	try:
 		# tries to get the like by its id
-		like = Like.get(Like.id == like_id, Like.soft_delete == False)
+		like = Like.get(Like.post == post_id,
+						Like.user == current_user.id,
+					    Like.soft_delete == False)
 
-		# if the user is the user of the like
-		if like.user.id == current_user.id:
+		# set soft_delete to true to delete the like
+		like.soft_delete = True 
+		like.save()
 
-			# set soft_delete to true to delete the like
-			like.soft_delete = True 
-			like.save()
+		# convert to dictionary and remove users passwords
+		like_dict = model_to_dict(like)
+		del like_dict['user']['password']
+		del like_dict['post']['user']['password']
 
-			# convert to dictionary and remove users passwords
-			like_dict = model_to_dict(like)
-			del like_dict['user']['password']
-			del like_dict['post']['user']['password']
-
-			return jsonify(
-				data=like_dict,
-				status={'code': 200, 'message': 'Successfully unliked post.'}
-			)
-
-		# if the user is not the user of the like
-		else:
-			return jsonify(
-				data={},
-				status={'code', 401, 'message', 'User does not have access to this resource.'}
-			)
+		return jsonify(
+			data=like_dict,
+			status={'code': 200, 'message': 'Successfully unliked post.'}
+		)
 
 	# exception thrown if the like doesnt exist
 	except DoesNotExist:
