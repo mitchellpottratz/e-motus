@@ -9,6 +9,27 @@ from models.post import Post
 posts = Blueprint('posts', 'posts')
 
 
+# index route - gets all of the current users post
+@posts.route('/', methods=['GET'])
+@login_required
+def get_users_posts():
+
+	# gets all of the current users posts
+	posts = Post.select().where(Post.user == current_user.id, Post.soft_delete == False)
+
+	# iterate through all the post to convert each one
+	# to a dictionary and remove the users password
+	posts_list = []
+	for post in posts:
+		post_dict = model_to_dict(post)
+		del post_dict['user']['password']
+		posts_list.append(post_dict)
+
+	return jsonify(
+		data=posts_list,
+		status={'code': 200, 'message': 'Successfully got all of the users posts.'}
+	)
+
 # create route
 @posts.route('/', methods=['POST'])
 @login_required
@@ -25,7 +46,7 @@ def create_post():
 
 	return jsonify(
 		data=post_dict,
-		status={'code': 200, 'message': 'Successfully created post'}
+		status={'code': 201, 'message': 'Successfully created post.'}
 	)
 
 
