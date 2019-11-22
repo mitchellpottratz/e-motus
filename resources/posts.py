@@ -15,7 +15,7 @@ posts = Blueprint('posts', 'posts')
 def get_users_posts():
 
 	# gets all of the current users posts
-	posts = Post.select().where(Post.user == current_user.id, Post.soft_delete == False)
+	posts = Post.select().where(Post.user == current_user.id, Post.soft_delete == False).order_by(Post.timestamp.desc())
 
 	# iterate through all the post to convert each one
 	# to a dictionary and remove the users password

@@ -1,6 +1,6 @@
 from flask import Blueprint, jsonify, request
 from playhouse.shortcuts import model_to_dict
-from flask_login import login_user, current_user, logout_user
+from flask_login import login_user, current_user, logout_user, login_required
 from flask_bcrypt import generate_password_hash, check_password_hash
 from models.user import User
 from peewee import DoesNotExist
@@ -92,6 +92,7 @@ def login():
 
 # logout route
 @users.route('/logout', methods=['GET'])
+@login_required
 def logout():
 	# logs out the user
 	logout_user()
@@ -100,6 +101,32 @@ def logout():
 		data={},
 		status={'code': 200, 'message': 'Successfully logged out.'}
 	)
+
+
+# route for searching for other users
+@users.route('/find', methods=['POST'])
+@login_required
+def find_users():
+	# gets data from the client 
+	data = request.get_json()
+
+	# query the user by the search string
+	results = User.select().where(
+		(User.username.contains(data['value']))
+		)
+
+	# iterate through all of the results and convert the
+	# results to a dictionary and remove the password
+	results_list = []
+	for result in results:
+		result_dict = model_to_dict(result)
+		del result_dict['password']
+		results_list.append(result_dict)
+
+	return jsonify(
+		data=results_list,
+		status={'code': 200, 'message': 'Successfully got the search results'}
+	) 
 
 
 
