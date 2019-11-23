@@ -122,7 +122,7 @@ def find_users():
 	# results to a dictionary and remove the password
 	results_list = []
 	for result in results:
-		result_dict = model_to_dict(result)
+		result_dict = model_to_dict(result, backrefs=True, recurse=True)
 		del result_dict['password']
 		results_list.append(result_dict)
 
