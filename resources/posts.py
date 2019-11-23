@@ -4,6 +4,7 @@ from flask_login import current_user, login_required
 from peewee import DoesNotExist
 from models.post import Post 
 from models.follow import Follow
+from models.like import Like
 
 
 # creates blueprint for the posts resource
@@ -22,7 +23,7 @@ def get_users_posts():
 	# to a dictionary and remove the users password
 	posts_list = []
 	for post in posts:
-		post_dict = model_to_dict(post)
+		post_dict = model_to_dict(post, backrefs=True, recurse=True)
 		del post_dict['user']['password']
 		posts_list.append(post_dict)
 

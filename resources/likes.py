@@ -45,8 +45,9 @@ def get_posts_likes():
 		)
 
 
+# returns a list of all the posts the user has liked
 @likes.route('/user', methods=['GET'])
-def get_users_likes():
+def get_users_liked_posts():
 	
 	# gets all of the currents users likes
 	likes = Like.select().where(Like.user == current_user.id, 

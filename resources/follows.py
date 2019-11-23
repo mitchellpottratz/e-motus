@@ -33,7 +33,7 @@ def get_all_followers():
 
 	return jsonify(
 		data=followers_list,
-		status={'message': 'Successfully got all the followers'}
+		status={'code': 200, 'message': 'Successfully got all the followers'}
 	)
 
 
