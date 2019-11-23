@@ -17,7 +17,8 @@ posts = Blueprint('posts', 'posts')
 def get_users_posts():
 
 	# gets all of the current users posts
-	posts = Post.select().where(Post.user == current_user.id, Post.soft_delete == False).order_by(Post.timestamp.desc())
+	posts = Post.select().where(Post.user == current_user.id,
+								Post.soft_delete == False).order_by(Post.timestamp.desc())
 
 	# iterate through all the post to convert each one
 	# to a dictionary and remove the users password
@@ -52,7 +53,7 @@ def get_feed_posts():
 		# converts each post to a dictionary, removes the password and adds it to
 		# users_feed list 
 		for post in posts:
-			post_dict = model_to_dict(post)
+			post_dict = model_to_dict(post, backrefs=True, recurse=True)
 			del post_dict['user']['password']
 			users_feed.append(post_dict)
 

@@ -112,7 +112,10 @@ def find_users():
 
 	# query the user by the search string
 	results = User.select().where(
-		(User.username.contains(data['value']))
+		User.id != current_user.id,
+		User.username.contains(data['value']) |
+		User.first_name.contains(data['value']) |
+		User.last_name.contains(data['value']) 
 		)
 
 	# iterate through all of the results and convert the
