@@ -42,7 +42,7 @@ def register():
 		login_user(user)
 
 		# convert user to dictionary and remove password
-		user_dict = model_to_dict(user)
+		user_dict = model_to_dict(user, backrefs=True, recurse=True)
 		del user_dict['password']
 
 		return jsonify(
@@ -67,7 +67,7 @@ def login():
 			login_user(user)
 
 			# convert to dicitonary and remove password
-			user_dict = model_to_dict(user)
+			user_dict = model_to_dict(user, backrefs=True, recurse=True)
 			del user_dict['password']
 
 			return jsonify(

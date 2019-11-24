@@ -20,6 +20,9 @@ PORT = 8000 # app runs on port 8000
 # instantiates the flask app
 app = Flask(__name__)
 
+# folder images will upload into
+app.config['UPLOAD_FOLDER'] = './static/images/'
+
 # apps secret key
 app.secret_key = 'kjfdksfjdslfjdslnljkgnaslfjdsjnjewvajiosdhfusuajfhewuofja'
 
@@ -51,13 +54,13 @@ def after_request(response):
 	return response # returns response to client
 
 
-# setup CORS for each resource 
+# setup CORS for each resource here
 CORS(users, origins=['http://localhost:3000'], supports_credentials=True)
 CORS(posts, origins=['http://localhost:3000'], supports_credentials=True)
 CORS(likes, origins=['http://localhost:3000'], supports_credentials=True)
 CORS(follows, origins=['http://localhost:3000'], supports_credentials=True)
 
-# setup blueprints
+# setup blueprints here
 app.register_blueprint(users, url_prefix='/api/v1/users')
 app.register_blueprint(posts, url_prefix='/api/v1/posts')
 app.register_blueprint(likes, url_prefix='/api/v1/likes')
