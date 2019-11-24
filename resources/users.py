@@ -118,12 +118,6 @@ def logout():
 	)
 
 
-# @users.route('/upload/image', methods=['POST'])
-# @login_required
-# def upload_image():
-
-
-
 # route for searching for other users
 @users.route('/find', methods=['POST'])
 @login_required

@@ -25,12 +25,10 @@ def get_posts_likes():
 		# iterate through all of the posts likes, convert each like
 		# to a dictionary, remove the users password, and append to the list
 		likes_list = []
-		for like in Like.select().where(Like.post == post.id, soft_delete == False):
-			# only add likes with a soft_delete of false to the list
-			if like.soft_delete == False:
-				like_dict = model_to_dict(like)
-				Like.remove_passwords(like_dict)
-				likes_list.append(like_dict)
+		for like in post.likes:
+			like_dict = model_to_dict(like)
+			Like.remove_passwords(like_dict)
+			likes_list.append(like_dict)
 
 		return jsonify(
 			data=likes_list,
@@ -50,14 +48,14 @@ def get_posts_likes():
 def get_users_liked_posts():
 	
 	# gets all of the currents users likes
-	likes = Like.select().where(Like.user == current_user.id, 
-							    Like.soft_delete == False)
+	likes = Like.select().where(Like.user == current_user.id)
 
 	# iterate through all the likes, get the post from the like, convert each like
 	# to a dictionary, remove the users password
 	users_liked_posts = []
 	for like in likes:
 		post_dict = model_to_dict(like.post)
+		print('liked post:', post_dict)
 		del post_dict['user']['password']
 		users_liked_posts.append(post_dict)	
 
@@ -76,33 +74,11 @@ def create_like():
 		data = request.get_json()
 
 		# tries to get the post by its id
-		post_id = Post.get(Post.id == data['postId'], Post.soft_delete == False)
+		post_id = Post.get(Post.id == data['postId'])
 	
 		try:
 			# checks if a like for that post and user already exists
 			like = Like.get(Like.post == post_id, Like.user == current_user.id)
-
-			# if the like already existed before, but was removed
-			if like.soft_delete == True:
-				# set soft_delete to false and save
-				like.soft_delete = False
-				like.save()
-
-				# convert to dictonary and remove password
-				like_dict = model_to_dict(like)
-				Like.remove_passwords(like_dict)
-
-				return jsonify(
-					data=like_dict,
-					status={'code': 201, 'message': 'User successfully liked post.'}
-				)
-
-			# if the user already liked teh post
-			else:
-				return jsonify(
-					data={},
-					status={'code': 401, 'message': 'User has already liked this post'}
-				)
 
 		# if the user has not already likes the post
 		except DoesNotExist:
@@ -134,7 +110,7 @@ def create_like():
 def show_like(like_id):
 	try:
 		# tries to get the like by its id
-		like = Like.get(Like.id == like_id, Like.soft_delete == False)
+		like = Like.get(Like.id == like_id)
 
 		# convert to dictionary and remove users passwords
 		like_dict = model_to_dict(like)
@@ -159,22 +135,15 @@ def show_like(like_id):
 @login_required
 def delete_like(post_id):
 	try:
-		# tries to get the like by its id
-		like = Like.get(Like.post == post_id,
-						Like.user == current_user.id,
-					    Like.soft_delete == False)
 
-		# set soft_delete to true to delete the like
-		like.soft_delete = True 
-		like.save()
+		# gets the post the like is related to
+		post = Post.get(Post.id == post_id)
 
-		# convert to dictionary and remove users passwords
-		like_dict = model_to_dict(like)
-		del like_dict['user']['password']
-		del like_dict['post']['user']['password']
+		# gets the like instance by the post and current user
+		Like.delete().where(Like.post == post, Like.user == current_user.id).execute()
 
 		return jsonify(
-			data=like_dict,
+			data={},
 			status={'code': 200, 'message': 'Successfully unliked post.'}
 		)
 
