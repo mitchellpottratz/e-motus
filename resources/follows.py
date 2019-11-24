@@ -26,7 +26,7 @@ def get_all_followers():
 	# and remove the users passwords
 	followers_list = []	
 	for follower in followers:
-		follow_dict = model_to_dict(follower)
+		follow_dict = model_to_dict(follower, backrefs=True, recurse=True)
 		Follow.remove_passwords(follow_dict)
 		followers_list.append(follow_dict)
 

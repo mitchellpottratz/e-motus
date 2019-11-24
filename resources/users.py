@@ -21,34 +21,49 @@ def register():
 		# queries a user by the provided email
 		User.get(User.email == data['email'])
 
-		# queries a user by the provided username
-		User.get(User.username == data['username'])
-
-		# returns error if the email or username exists
+		# returns error if the email exists
 		return jsonify(
 			data={},
-			status={'code': 401, 'message': 'A user with that email or username already exists'}
+			status={'code': 401,
+					'message': 'A user with that email already exists.',
+					'field_error': 'email'}
 		)
 
-	# the following code runs if the emal and username doesnt exist
+	# the following code runs if the email doesnt already exist
 	except DoesNotExist:
-		# encrypts the password
-		data['password'] = generate_password_hash(data['password'])
 
-		# creates the user
-		user = User.create(**data)
+		try:
+			# queries a user by the provided username
+			User.get(User.username == data['username'])
 
-		# logs in the user
-		login_user(user)
+			# returns error if username exists
+			return jsonify(
+				data={},
+				status={'code': 401,
+					    'message': 'A user with that username already exists.',
+					    'field_error': 'username'}
+			)
 
-		# convert user to dictionary and remove password
-		user_dict = model_to_dict(user, backrefs=True, recurse=True)
-		del user_dict['password']
+		# the following code runs if the username doesnt already exist
+		except DoesNotExist:
 
-		return jsonify(
-			data=user_dict,
-			status={'code': 201, 'message': 'Successfully registered {}.'.format(user_dict['email'])}
-		)
+			# encrypts the password
+			data['password'] = generate_password_hash(data['password'])
+
+			# creates the user
+			user = User.create(**data)
+
+			# logs in the user
+			login_user(user)
+
+			# convert user to dictionary and remove password
+			user_dict = model_to_dict(user, backrefs=True, recurse=True)
+			del user_dict['password']
+
+			return jsonify(
+				data=user_dict,
+				status={'code': 201, 'message': 'Successfully registered {}.'.format(user_dict['email'])}
+			)
 
 
 # login route
@@ -101,6 +116,12 @@ def logout():
 		data={},
 		status={'code': 200, 'message': 'Successfully logged out.'}
 	)
+
+
+# @users.route('/upload/image', methods=['POST'])
+# @login_required
+# def upload_image():
+
 
 
 # route for searching for other users
