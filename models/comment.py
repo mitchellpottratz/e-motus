@@ -20,8 +20,6 @@ class Comment(Model):
 	# the text of the comment
 	content = CharField(max_length=350, null=False)
 
-	
-
 	soft_delete = BooleanField(default=False)
 	timestamp = DateTimeField(default=datetime.datetime.now())
 
