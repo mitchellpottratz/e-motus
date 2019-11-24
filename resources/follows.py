@@ -16,8 +16,7 @@ follows = Blueprint('follows', 'follows')
 def get_all_followers():
 
 	# gets all of the users followers
-	followers = Follow.select().where(Follow.followed == current_user.id,
-						   			  Follow.soft_delete == False)
+	followers = Follow.select().where(Follow.followed == current_user.id)
 
 	print(followers)
 
@@ -43,8 +42,7 @@ def get_all_followers():
 def get_all_following():
 
 	# gets all the users the current user is followng
-	following = Follow.select().where(Follow.followed_by == current_user.id,
-						   			  Follow.soft_delete == False)
+	following = Follow.select().where(Follow.followed_by == current_user.id)
 
 	# iterate all of the users following the current user, convert
 	# each following instance to a dictionary and remove the users
@@ -74,36 +72,13 @@ def follow_user():
 		try:
 			# checks if the current user is already following this user 
 			is_following = Follow.get(Follow.followed_by == current_user.id,
-									  Follow.followed == user_to_follow.id)
-
-			# if the user has previously followed this user before
-			if is_following.soft_delete == True:
-
-				# set soft_delete to false and save
-				is_following.soft_delete = False
-				is_following.save()
-
-				# convert to dictionary and remove the users password
-				follow_dict = model_to_dict(is_following)
-				Follow.remove_passwords(follow_dict)
-
-				return jsonify(
-					data=follow_dict,
-					status={'code': 201, 'message': 'User is now following {}.'.format(follow_dict['followed']['email'])}
-				)
-				
-			# if the user is currently already following this user
-			else:
-				return jsonify(
-					data={},
-					status={'code': 401, 'message': 'User is already following this user'}
-				)
+									  Follow.followed == user_to_follow)
 
 		# exception thrown if the current_user is not already followng the user
 		except DoesNotExist:
 
 			# create follow model - current user now follows the user
-			follow = Follow.create(followed_by=current_user.id, followed=user_to_follow.id)
+			follow = Follow.create(followed_by=current_user.id, followed=user_to_follow)
 
 			# convert follow to dictionary and remove both users password
 			follow_dict = model_to_dict(follow)
@@ -128,22 +103,16 @@ def follow_user():
 @login_required
 def unfollow_user(user_id):
 	try:
-		# gets the follow by its id
-		follow = Follow.get(Follow.followed == user_id,
-							Follow.followed_by == current_user.id,
-					        Follow.soft_delete == False)
+		# gets the user the current user is going to unfollow
+		followed_user = User.get(User.id == user_id)
 
-		# deletes the follow with soft delete and saves it
-		follow.soft_delete = True
-		follow.save()
-
-		# converts to dictionary and removes users passwords
-		follow_dict = model_to_dict(follow)
-		Follow.remove_passwords(follow_dict)
+		# deletes the follow instance (unfollow the user)
+		Follow.delete().where(Follow.followed == followed_user,
+							  Follow.followed_by == current_user.id).execute()
 
 		return jsonify(
-			data=follow_dict,
-			status={'code': 200, 'message': 'Successfully unfollowed {}.'.format(follow_dict['followed']['email'])}
+			data={},
+			status={'code': 200, 'message': 'Successfully unfollowed user.'}
 		)
 
 	# exception thrown if the model exists

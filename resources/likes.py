@@ -88,7 +88,6 @@ def create_like():
 
 			# convert like to dictionary and remove both users password
 			like_dict = model_to_dict(like)
-			print('new like creared', like_dict)
 			del like_dict['user']['password']
 			del like_dict['post']['user']['password']
 
