@@ -25,7 +25,7 @@ def get_posts_likes():
 		# iterate through all of the posts likes, convert each like
 		# to a dictionary, remove the users password, and append to the list
 		likes_list = []
-		for like in post.likes:
+		for like in Like.select().where(Like.post == post.id, soft_delete == False):
 			# only add likes with a soft_delete of false to the list
 			if like.soft_delete == False:
 				like_dict = model_to_dict(like)
