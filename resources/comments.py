@@ -22,7 +22,7 @@ def get_post_comment(post_id):
 		# to a dictionary
 		comment_list = []
 		for comment in post.comments:
-			comment_list.append(model_to_dict(comment))
+			comment_list.append(model_to_dict(comment, backrefs=True, recurse=True))
 
 		return jsonify(
 			data=comment_list,
@@ -35,6 +35,36 @@ def get_post_comment(post_id):
 			data={},
 			status={'code': 404, 'message': 'Resource does not exist.'}
 		)
+
+
+# this route gets all of the comments create by the current
+# user for a single post
+@comments.route('/user/<post_id>', methods=['GET'])
+@login_required
+def get_users_comments_for_post(post_id):
+	try:
+		# gets post by its id
+		post = Post.get(Post.id == post_id, Post.soft_delete == False)
+
+		# gets all of the users comments for this post
+		users_comments = Comment.select().where(Comment.post == post,
+											    Comment.user == current_user.id)
+
+		# convert all of the user comments to a dictionary
+		users_comments_dict = [model_to_dict(comment) for comment in users_comments]
+
+		return jsonify(
+			data=users_comments_dict,
+			status={'code': 200, 'message': 'Successfully got the users comments for this post.'}
+		)
+
+	# if the queried post doesnt exist
+	except DoesNotExist:
+		return jsonify(
+			data={},
+			status={'code': 404, 'message': 'Resource does not exist.'}
+		)
+
 
 
 # create route - creates a new comment
