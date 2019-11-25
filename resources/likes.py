@@ -55,7 +55,6 @@ def get_users_liked_posts():
 	users_liked_posts = []
 	for like in likes:
 		post_dict = model_to_dict(like.post)
-		print('liked post:', post_dict)
 		del post_dict['user']['password']
 		users_liked_posts.append(post_dict)	
 
