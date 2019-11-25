@@ -30,7 +30,7 @@ def get_post_comment():
 
 		return jsonify(
 			data=comment_list,
-			status={'code': 201, 'message': 'successfully created comment.'}
+			status={'code': 200, 'message': 'successfully created comment.'}
 		)
 
 	# if the queried post doesnt exist
@@ -65,6 +65,27 @@ def create_comment():
 		)
 
 	# if the queried post doesnt exist
+	except DoesNotExist:
+		return jsonify(
+			data={},
+			status={'code': 404, 'message': 'Resource does not exist.'}
+		)
+
+
+# delete route - deletes a comment by its id
+@comments.route('/<comment_id>', methods=['DELETE'])
+@login_required
+def delete_one_comment(comment_id):
+	try:
+		# deletes the comment
+		Comment.delete().where(Comment.id == comment_id).execute()
+
+		return jsonify(
+			data={},
+			status={'code': 200, 'message': 'successfully deleted comment.'}			
+		)
+
+	# if the queried comment doesnt exist
 	except DoesNotExist:
 		return jsonify(
 			data={},
