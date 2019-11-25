@@ -18,8 +18,6 @@ def get_all_followers():
 	# gets all of the users followers
 	followers = Follow.select().where(Follow.followed == current_user.id)
 
-	print(followers)
-
 	# iterate over all of the users followers to 
 	# convert each follower instance to a dictionary
 	# and remove the users passwords

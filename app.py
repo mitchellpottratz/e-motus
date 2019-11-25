@@ -13,15 +13,13 @@ from resources.users import users
 from resources.posts import posts
 from resources.likes import likes
 from resources.follows import follows
+from resources.comments import comments
 
 DEGUB = True # app with log error messages
 PORT = 8000 # app runs on port 8000
 
 # instantiates the flask app
 app = Flask(__name__)
-
-# folder images will upload into
-app.config['UPLOAD_FOLDER'] = './static/images/'
 
 # apps secret key
 app.secret_key = 'kjfdksfjdslfjdslnljkgnaslfjdsjnjewvajiosdhfusuajfhewuofja'
@@ -59,12 +57,14 @@ CORS(users, origins=['http://localhost:3000'], supports_credentials=True)
 CORS(posts, origins=['http://localhost:3000'], supports_credentials=True)
 CORS(likes, origins=['http://localhost:3000'], supports_credentials=True)
 CORS(follows, origins=['http://localhost:3000'], supports_credentials=True)
+CORS(comments, origins=['http://localhost:3000'], supports_credentials=True)
 
 # setup blueprints here
 app.register_blueprint(users, url_prefix='/api/v1/users')
 app.register_blueprint(posts, url_prefix='/api/v1/posts')
 app.register_blueprint(likes, url_prefix='/api/v1/likes')
 app.register_blueprint(follows, url_prefix='/api/v1/follows')
+app.register_blueprint(comments, url_prefix='/api/v1/comments')
 
 
 if __name__ == '__main__':

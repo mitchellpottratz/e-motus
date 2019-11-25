@@ -5,8 +5,13 @@ from models.user import User
 from models.comment import Comment
 from peewee import DoesNotExist
 
-
+# blueprint for comments resource 
 comments = Blueprint('comments', 'comments')
+
+
+@comments.route('/test', methods=['GET'])
+def test():
+	return 'comments work'
 
 
 
