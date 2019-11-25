@@ -11,16 +11,12 @@ comments = Blueprint('comments', 'comments')
 
 
 # index route - gets all of the comments for a post
-@comments.route('/', methods=['GET'])
+@comments.route('/<post_id>', methods=['GET'])
 @login_required
-def get_post_comment():
-
-	# gets json data from client
-	data = request.get_json()
-
+def get_post_comment(post_id):
 	try:
 		# gets post by its id
-		post = Post.get(Post.id == data['post_id'], Post.soft_delete == False)
+		post = Post.get(Post.id == post_id, Post.soft_delete == False)
 	
 		# iterate through all of the posts comments and convert each post
 		# to a dictionary
