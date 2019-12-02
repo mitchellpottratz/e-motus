@@ -1,4 +1,5 @@
 # module imports 
+import os
 from flask import Flask, g
 from flask_cors import CORS
 from flask_login import LoginManager
@@ -65,6 +66,14 @@ app.register_blueprint(posts, url_prefix='/api/v1/posts')
 app.register_blueprint(likes, url_prefix='/api/v1/likes')
 app.register_blueprint(follows, url_prefix='/api/v1/follows')
 app.register_blueprint(comments, url_prefix='/api/v1/comments')
+
+
+# ADD THESE THREE LINES -- because in production the app will be run with 
+# gunicorn instead of by the three lines below, so we want to initialize the
+# tables in that case as well
+if 'ON_HEROKU' in os.environ: 
+  print('\non heroku!')
+  models.config.initialize()
 
 
 if __name__ == '__main__':

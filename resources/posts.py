@@ -48,7 +48,7 @@ def get_feed_posts():
 	# of their posts
 	users_feed = []
 	for user in users_followers:
-		posts = Post.select().where(Post.user == user.followed)
+		posts = Post.select().where(Post.user == user.followed, Post.soft_delete == False)
 
 		# converts each post to a dictionary, removes the password and adds it to
 		# users_feed list 
