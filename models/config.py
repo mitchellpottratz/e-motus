@@ -2,6 +2,13 @@ from playhouse.db_url import connect
 import os
 from peewee import *
 
+# models from other files
+from .user import User
+from .post import Post
+from .like import Like
+from .follow import Follow
+from .comment import Comment
+
 
 if 'ON_HEROKU' in os.environ: # later we will manually add this env var 
                               # in heroku so we can write this code
@@ -11,13 +18,6 @@ if 'ON_HEROKU' in os.environ: # later we will manually add this env var
                                                      # Heroku Postgres Add-on
 else:
   DATABASE = SqliteDatabase('emotus.sqlite')
-
-# models from other files
-from .user import User
-from .post import Post
-from .like import Like
-from .follow import Follow
-from .comment import Comment
 
 
 # this method is called when the server starts
