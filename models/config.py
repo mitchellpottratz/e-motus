@@ -9,8 +9,8 @@ if 'ON_HEROKU' in os.environ: # later we will manually add this env var
                                                      # env var for you 
                                                      # when you provision the
                                                      # Heroku Postgres Add-on
-# else:
-#   DATABASE = PostgresqlDatabase('emotus', user='mitchellpottratz')
+else:
+  DATABASE = SqliteDatabase('emotus', user='mitchellpottratz')
 
 
 # models from other files

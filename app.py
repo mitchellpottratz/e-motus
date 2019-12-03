@@ -49,8 +49,6 @@ def before_request():
 # called after every request
 @app.after_request
 def after_request(response):
-	header = response.headers
-    header['Access-Control-Allow-Origin'] = '*'
 	g.db.close() # closes database connection
 	return response # returns response to client
 
