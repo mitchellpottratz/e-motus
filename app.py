@@ -54,11 +54,11 @@ def after_request(response):
 
 
 # setup CORS for each resource here
-CORS(users, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
-CORS(posts, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
-CORS(likes, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
-CORS(follows, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
-CORS(comments, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
+CORS(users, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
+CORS(posts, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
+CORS(likes, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
+CORS(follows, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
+CORS(comments, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
 
 # setup blueprints here
 app.register_blueprint(users, url_prefix='/api/v1/users')
