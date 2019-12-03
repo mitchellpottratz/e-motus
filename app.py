@@ -49,16 +49,18 @@ def before_request():
 # called after every request
 @app.after_request
 def after_request(response):
+	header = response.headers
+    header['Access-Control-Allow-Origin'] = '*'
 	g.db.close() # closes database connection
 	return response # returns response to client
 
 
 # setup CORS for each resource here
-CORS(users, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
-CORS(posts, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
-CORS(likes, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
-CORS(follows, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
-CORS(comments, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com'], supports_credentials=True)
+CORS(users, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
+CORS(posts, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
+CORS(likes, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
+CORS(follows, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
+CORS(comments, origins=['http://localhost:3000', 'https://emotus-app.herokuapp.com/'], supports_credentials=True)
 
 # setup blueprints here
 app.register_blueprint(users, url_prefix='/api/v1/users')
