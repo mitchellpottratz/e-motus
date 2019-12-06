@@ -1,12 +1,16 @@
 import datetime
+import os
 from peewee import *
 from .user import User
 from .post import Post
-from .config import DATABASE
 
 
 # database the Like models data will go into
-# DATABASE = SqliteDatabase('emotus.sqlite')
+if 'ON_HEROKU' in os.environ: 
+  DATABASE = connect(os.environ.get('DATABASE_URL')) 
+else:
+  DATABASE = SqliteDatabase('emotus.sqlite')
+
 
 
 # model for posting comments on a post

@@ -1,10 +1,13 @@
 import datetime
+import os
 from peewee import *
 from flask_login import UserMixin
-from .config import DATABASE
 
 # database the User models data will go into
-# DATABASE = SqliteDatabase('emotus.sqlite')
+if 'ON_HEROKU' in os.environ: 
+  DATABASE = connect(os.environ.get('DATABASE_URL')) 
+else:
+  DATABASE = SqliteDatabase('emotus.sqlite')
 
 # user model - clients account
 class User(Model, UserMixin):
