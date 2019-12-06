@@ -43,19 +43,6 @@ def load_user(user_id):
 	except DoesNotExist:
  		return None
 
-# called before every request
-@app.before_request 
-def before_request():
-	g.db = models.config.DATABASE 
-	g.db.connect() # connects tot he database
-	g.user = current_user
-
-# called after every request
-@app.after_request
-def after_request(response):
-	g.db.close() # closes database connection
-	return response # returns response to client
-
 # setup CORS for each resource here
 CORS(users, origins=[origin], supports_credentials=True)
 CORS(posts, origins=[origin], supports_credentials=True)
@@ -69,6 +56,20 @@ app.register_blueprint(posts, url_prefix='/api/v1/posts')
 app.register_blueprint(likes, url_prefix='/api/v1/likes')
 app.register_blueprint(follows, url_prefix='/api/v1/follows')
 app.register_blueprint(comments, url_prefix='/api/v1/comments')
+
+# called before every request
+@app.before_request 
+def before_request():
+	g.db = models.config.DATABASE 
+	g.db.connect() # connects tot he database
+	g.user = current_user
+
+# called after every request
+@app.after_request
+def after_request(response):
+	g.db.close() # closes database connection
+	return response # returns response to client
+
 
 
 # ADD THESE THREE LINES -- because in production the app will be run with 
