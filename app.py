@@ -44,6 +44,7 @@ def load_user(user_id):
  		return None
 
 # setup CORS for each resource here
+print("origins >>>>> ", origin)
 CORS(users, origins=[origin], supports_credentials=True)
 CORS(posts, origins=[origin], supports_credentials=True)
 CORS(likes, origins=[origin], supports_credentials=True)
@@ -62,7 +63,6 @@ app.register_blueprint(comments, url_prefix='/api/v1/comments')
 def before_request():
 	g.db = models.config.DATABASE 
 	g.db.connect() # connects tot he database
-	g.user = current_user
 
 # called after every request
 @app.after_request
