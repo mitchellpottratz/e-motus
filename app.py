@@ -16,6 +16,11 @@ from resources.likes import likes
 from resources.follows import follows
 from resources.comments import comments
 
+if 'ORIGIN' in os.environ:
+	origin = os.environ['ORIGIN']
+else:
+	origin = 'http://localhost:3000'
+
 DEGUB = True # app with log error messages
 PORT = 8000 # app runs on port 8000
 
@@ -38,26 +43,17 @@ def load_user(user_id):
 	except DoesNotExist:
  		return None
 
-
 # called before every request
 @app.before_request 
 def before_request():
 	g.db = models.config.DATABASE 
 	g.db.connect() # connects tot he database
 
-
 # called after every request
 @app.after_request
 def after_request(response):
-	response.headers.add('Access-Control-Allow-Origin', '*')
 	g.db.close() # closes database connection
 	return response # returns response to client
-
-if 'ORIGIN' in os.environ:
-	origin = os.environ['ORIGIN']
-else:
-	origin = 'http://localhost:3000'
-
 
 # setup CORS for each resource here
 CORS(users, origins=[origin], supports_credentials=True)
