@@ -1,9 +1,10 @@
 import datetime
 from peewee import *
 from .user import User
+from .config import DATABASE
 
 # database the Post model data will go into
-DATABASE = SqliteDatabase('emotus.sqlite')
+# DATABASE = SqliteDatabase('emotus.sqlite')
 
 
 # this is the model for posts

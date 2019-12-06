@@ -2,10 +2,11 @@ import datetime
 from peewee import *
 from .user import User
 from .post import Post
+from .config import DATABASE
 
 
 # database the Like models data will go into
-DATABASE = SqliteDatabase('emotus.sqlite')
+# DATABASE = SqliteDatabase('emotus.sqlite')
 
 
 # model for posting comments on a post

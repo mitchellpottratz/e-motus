@@ -1,10 +1,11 @@
 import datetime
 from peewee import *
 from .user import User
+from .config import DATABASE
 
 
 # database the Like models data will go into
-DATABASE = SqliteDatabase('emotus.sqlite')
+# DATABASE = SqliteDatabase('emotus.sqlite')
 
 # this model is responsible for allowing users to follow eachother
 class Follow(Model):

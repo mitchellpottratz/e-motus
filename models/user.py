@@ -1,9 +1,10 @@
 import datetime
 from peewee import *
 from flask_login import UserMixin
+from .config import DATABASE
 
 # database the User models data will go into
-DATABASE = SqliteDatabase('emotus.sqlite')
+# DATABASE = SqliteDatabase('emotus.sqlite')
 
 # user model - clients account
 class User(Model, UserMixin):
