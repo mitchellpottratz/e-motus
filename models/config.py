@@ -17,7 +17,7 @@ from .comment import Comment
 
 # this method is called when the server starts
 def initialize():
-	DATABASE.connection() # establish database connection
+	DATABASE.connect() # establish database connection
 	DATABASE.create_tables([User, Post, Like, Follow, Comment], safe=True) # creates the database tables
 	DATABASE.close() # closes the database connection
 
