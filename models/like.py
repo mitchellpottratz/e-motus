@@ -3,6 +3,7 @@ import os
 from peewee import *
 from .user import User
 from .post import Post
+from playhouse.db_url import connect
 
 # database the Like models data will go into
 if 'ON_HEROKU' in os.environ: 

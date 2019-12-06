@@ -2,6 +2,7 @@ import datetime
 import os
 from peewee import *
 from flask_login import UserMixin
+from playhouse.db_url import connect
 
 # database the User models data will go into
 if 'ON_HEROKU' in os.environ: 

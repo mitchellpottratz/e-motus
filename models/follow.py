@@ -2,6 +2,7 @@ import datetime
 import os
 from peewee import *
 from .user import User
+from playhouse.db_url import connect
 
 
 # database the Like models data will go into

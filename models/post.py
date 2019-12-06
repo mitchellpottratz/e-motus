@@ -2,6 +2,7 @@ import datetime
 import os
 from peewee import *
 from .user import User
+from playhouse.db_url import connect
 
 # database the Post model data will go into
 if 'ON_HEROKU' in os.environ: 
