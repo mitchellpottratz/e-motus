@@ -2,7 +2,7 @@
 import os
 from flask import Flask, g
 from flask_cors import CORS
-from flask_login import LoginManager
+from flask_login import LoginManager, current_user
 
 # model import 
 import models.config
@@ -48,6 +48,7 @@ def load_user(user_id):
 def before_request():
 	g.db = models.config.DATABASE 
 	g.db.connect() # connects tot he database
+	g.user = current_user
 
 # called after every request
 @app.after_request
