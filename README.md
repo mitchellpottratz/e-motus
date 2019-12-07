@@ -6,10 +6,23 @@ This app allows people (users) to post about something that happened to them, ho
 
 ## Routes 
 
-### /user Routes
-|  URL  | HTTP Verb | Action |      Description      | 
+### /users Routes
+|  URL  | HTTP Verb | RESTful Action |      Description      | 
 |-------|-----------|--------|-----------------------|
 | /users/login/ | POST | login | Logs in an existing user |
+| /users/register/ | POST | register | Registers a new user |
+| /users/logout/ | GET | logout | Logs out a user |
+
+### /posts Routes
+|  URL  | HTTP Verb | RESTful Action |      Description      | 
+|-------|-----------|--------|-----------------------|
+| /posts/ | GET | index | Gets all of the current users posts |
+| /posts/feed | GET | - | Gets all post from users the current user follows |
+| /posts/ | POST | create | Creates a new post |
+| /posts/<id>/ | GET | show | Gets a single post |
+| /posts/<id>/ | PUT | update | Updates a post |
+| /posts/<id/ | DELETE | delete | Deletes a post |
+
 
 
 
