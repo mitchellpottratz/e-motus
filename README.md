@@ -3,6 +3,14 @@
 ## Description
 This app allows people (users) to post about something that happened to them, how they are feeling, etc. Along with the text of the post, they also include an emotion text of how they are feeling, plus an emoji that correlates to how they are feeling. Users have the ability to see the other posts of users they follow. They can interact with posts by liking and commenting on them. 
 
+
+## Routes 
+
+| Header | Second Header |
+|--------|---------------|
+
+
+
 ## User Stories
 
 ### User registers
