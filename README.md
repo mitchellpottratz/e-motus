@@ -19,9 +19,9 @@ This app allows people (users) to post about something that happened to them, ho
 | /posts/ | GET | index | Gets all of the current users posts |
 | /posts/feed | GET | - | Gets all post from users the current user follows |
 | /posts/ | POST | create | Creates a new post |
-| /posts/<id>/ | GET | show | Gets a single post |
-| /posts/<id>/ | PUT | update | Updates a post |
-| /posts/<id/ | DELETE | delete | Deletes a post |
+| /posts/{postId}/ | GET | show | Gets a single post |
+| /posts/{postId}/ | PUT | update | Updates a post |
+| /posts/{postId}/ | DELETE | delete | Deletes a post |
 
 
 
