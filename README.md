@@ -6,8 +6,10 @@ This app allows people (users) to post about something that happened to them, ho
 
 ## Routes 
 
-| Header | Second Header |
-|--------|---------------|
+### /user Routes
+|  URL  | HTTP Verb | Action |      Description      | 
+|-------|-----------|--------|-----------------------|
+| /users/login/ | POST | login | Logs in an existing user |
 
 
 
